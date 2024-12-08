@@ -1,15 +1,17 @@
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 class Cliente extends Thread {
     private String nombreCliente;
     private int numeroVehiculo;
-    private int vehiculosDisponibles;
     private Semaphore semaforo;
+    private static final Set<Integer> vehiculosEnUso = new HashSet<>();
+    private static final Object lock = new Object(); // Para sincronizar acceso a vehiculosEnUso
 
-    public Cliente(String nombreCliente, Semaphore semaforo, int vehiculosDisponibles) {
+    public Cliente(String nombreCliente, Semaphore semaforo) {
         this.nombreCliente = nombreCliente;
         this.semaforo = semaforo;
-        this.vehiculosDisponibles = vehiculosDisponibles;
     }
 
     @Override
@@ -17,14 +19,26 @@ class Cliente extends Thread {
         try {
             semaforo.acquire();
 
-            // Probamos un vehiculo al azar entre el numero de vehiculos disponibles
-            numeroVehiculo = (int) (Math.random() * vehiculosDisponibles) + 1;
+            synchronized (lock) {
+                // Buscar un vehículo disponible
+                for (int i = 1; i <= 4; i++) {
+                    if (!vehiculosEnUso.contains(i)) {
+                        numeroVehiculo = i;
+                        vehiculosEnUso.add(i);
+                        break;
+                    }
+                }
+            }
 
             System.out.println(nombreCliente + " probando vehículo " + numeroVehiculo);
 
             Thread.sleep(3000);
 
             System.out.println(nombreCliente + " terminó de probar el vehículo " + numeroVehiculo);
+
+            synchronized (lock) {
+                vehiculosEnUso.remove(numeroVehiculo); // Liberar el vehículo
+            }
 
             semaforo.release();
 
@@ -33,3 +47,4 @@ class Cliente extends Thread {
         }
     }
 }
+

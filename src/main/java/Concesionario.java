@@ -17,7 +17,7 @@ public class Concesionario {
 
         // Creamos los 9 clientes
         for(int i = 1; i <= NUMERO_CLIENTES; i++) {
-            Cliente cliente = new Cliente("Cliente " + i, semaforo, VEHICULOS_DISPONIBLES);
+            Cliente cliente = new Cliente("Cliente " + i, semaforo);
             cliente.start();
         }
 
