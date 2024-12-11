@@ -1,13 +1,10 @@
-import javax.swing.*;
+
 import java.util.concurrent.Semaphore;
 
 public class Concesionario {
 
     private final static int VEHICULOS_DISPONIBLES = 4;
     private final static int NUMERO_CLIENTES = 9;
-    private static DefaultListModel<String> listaEsperaModel;
-    private static DefaultListModel<String> listaProbandoModel;
-    private static JTextArea logArea;
     private static Semaphore semaforo;
 
     public static void main(String[] args) {
